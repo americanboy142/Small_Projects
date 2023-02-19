@@ -77,5 +77,27 @@ def factorial(n):
         return n * factorial(n-1)
         
 
-thing = factorial(5)
-print("fact:",thing)
+#thing = factorial(5)
+#print("fact:",thing)
+
+#import numpy as np
+
+def order_list(list,l=0):
+    if l == len(list):
+        #print("hi")
+        #print(list)
+        return list
+    else:
+        for i in range(len(list)):
+            #print("looped")
+            if list[i] > list[l]:
+                list[i],list[l] = list[l],list[i]
+                #print(list)
+        return order_list(list,l+1)
+
+
+test = [[2,5,6,4,561,6514,9,11,5,4,6,1,5,61,15,65,1,1,45,16156,5],[5,2,15,5,15,52,2,51,15,256526,5],[5,2,6.56,4,5,2,5,4,5,66,2,5,6,2,5,5,2,]]        
+for i in test:
+    thiing = order_list(i)
+    print(thiing)
+#eprint(numpy.random.randint(0,5161561561,3))
