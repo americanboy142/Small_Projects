@@ -116,8 +116,8 @@ for i in test_arrays:
     print(thiing) """
 #eprint(numpy.random.randint(0,5161561561,3))
 
-thing = np.array(([7.0,-6.0,3.0],[-8.0,9.0,-4.0]))
-sol_vec = np.array([3.0,-4.0])
+thing = np.array(([0.5,-1.0,1.0],[-2.0,0.5,-2.0]))
+#sol_vec = np.array([3.0,-4.0])
 #return solved for matrix
 def solver(matrix,row=0,col=0):
     if row == len(matrix):
@@ -179,17 +179,17 @@ def itersolve(s_matrix,x0,row=0,col=0,count=0):
             return itersolve(s_matrix,x0,row+1,col+1,count)
                 
 
-def itersolve2(s_matrix,x0,temp_vec,row=0,col=0,count=0):
-        print("temp_vec:", temp_vec)
+def itersolve2(s_matrix,x0,temp_vec,row=0,col=0,count=0,stop=0):
+        #print("temp_vec:", temp_vec)
         if col == len(s_matrix):
             #needs prev vector to only change on row change
             #print(x0)
             #print("ran")
             x0 = temp_vec.copy()
-            if count == 3:
+            if count == stop:
                 return x0
             else:
-                return itersolve2(s_matrix,x0,temp_vec,0,0,count+1)
+                return itersolve2(s_matrix,x0,temp_vec,0,0,count+1,stop)
             #return x0
 
         else:
@@ -205,8 +205,8 @@ def itersolve2(s_matrix,x0,temp_vec,row=0,col=0,count=0):
             temp_vec[col] += s_matrix[row][-1]
             #print(x0)
 
-            print("temp_vec after:", temp_vec)
-            return itersolve2(s_matrix,x0,temp_vec,row+1,col+1,count)
+            #print("temp_vec after:", temp_vec)
+            return itersolve2(s_matrix,x0,temp_vec,row+1,col+1,count,stop)
                 
 
 
@@ -217,12 +217,22 @@ def itersolve2(s_matrix,x0,temp_vec,row=0,col=0,count=0):
 
 temp_matrix = thing.copy()
 
-x0 = [0,0]
+
 
 thin = solver(temp_matrix)
 #print(len(thin))
+for i in range(5,20):
+    x0 = [0,0]
+    poo = itersolve2(thin,x0,x0.copy(),0,0,0,i)
 
-thing = itersolve2(thin,x0,x0.copy())
+    #print("thing:",poo)
 
-print("thing:",thing)
+    deal = 0
+    for i in range(len(thing[1])-1):
+        #print(poo[i]*thing[0][i])
+        deal += poo[i] * thing[1][i]
+
+    #deal += thing[0][-1]
+
+    print("deal:",deal)
 
