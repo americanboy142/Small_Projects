@@ -1,0 +1,176 @@
+# gram schmidt
+# A = [a0,a1,...,a(n-1)]
+# U[0] = a[0]
+# e[0] = U[0]/two_norm(U[0])
+# U[1] = a[1]-(a[1]*e[0])*e[0]
+# e[1] = U[1]/two_norm(U[1])
+# ...
+# U[i] = a[i]-(a[i]*e[0])*e[0]-...-(a[i]*e[i-1])*e[i-1]
+# e[i] = U[i]/two_norm(U[i])
+
+# Gram_Schmidt(A)
+# a is a column of A
+# U is a vector
+# e is a vector
+# needs:
+#   1) U_current = float
+#      i) U on the ith iteration
+#      ii) reset to 0 after each iteration
+#   2) e_current = list
+#      i) e on the ith iteration
+#      ii) reset to [] after each iteration
+#   3) temp_matrix
+#      i) full list of columns of Q
+#      ii) append with each e_current
+#   4) Q
+#      i) temp_matrix transposed
+#   5) a_current
+#      i) ith column of A
+#      ii) reset to [] after each iteration
+# output = Q = MAtrix => [e[0],e[1],...,e[n]]
+
+
+# QR
+# A = [a[0],a[1],...,a[n]] = [e[0],e[1],...,e[n]] * [[a[0]*e[0] , a[1]*e[0] ,..., a[n]*e[0]], 
+#                                                    [[0]       , a[1]e[1] ,...,  a[n]e[1]],
+#                                                    [[0]       ,     [0]  ,...,  a[n]e[2]]
+#                                       * 0's till a[i][i]   
+# QR(Q)
+# Q matrix with columns e[i]
+# output = (Q,R)
+# Q from GS
+# R = second matrix     
+import numpy as np
+
+def two_norm(U):
+    return (sum(U[i]**2 for i in range(len(U))))**(1/2)
+
+def vec_multiply(v1, v2):
+    multiplied = []
+    for i in range(len(v1)):
+        multiplied.append(v2[i]*v1[i])
+    return multiplied
+
+def vec_add(v1,v2):
+    summed_vec = []
+    for i in range(len(v2)):
+        summed = []
+        for deal in range(len(v2[i])):
+            summed.append(v1[i][deal]+v2[i][deal])
+        summed_vec.append(summed)
+    return summed_vec
+ 
+def U_partial(a_current,e_stored):
+    multy = np.multiply(a_current,e_stored)
+    #multiply should = (ai*ej)
+    print("multiply: ", multy)
+    summ = sum(multy)
+    #summ = sum of multiply *scalor to multiply by e(i)
+    print("summed multiply: ",summ)
+    summ *= e_stored
+    print("summed final: ",summ)
+    return(-summ)
+
+
+
+
+
+def Gram_Schmidt(A,itteration = 0, e_stored = []):
+    #U_current = np.array([])
+    U_current = np.zeros(len(A))
+    e_current = np.array([])
+    a_current = np.array([])
+    U_partial_vec = []
+    
+
+    if itteration == len(A):
+        # Q = temp_matrix^t
+        # return Q
+        return np.transpose(e_stored)
+    
+    else:
+        print(f"=========  {itteration+1}  ============")
+        a_current = A[:,itteration]
+            # a_current = A[column[itteration]]
+            # done with a_current
+        
+        # set U_current
+        # uses two list opperation defs
+        # 1) U_partial(a_current, temp_matrix)
+        #    i) returns all but first a[i] of U
+        #    ii) will use vec_multiply(vec_multiply(a_current, temp_matrix),temp_matrix)
+        #          a) multiplys two lists
+        '''
+        for i in range(len(a_current)):
+            np.sum(U_partial[i]+U_partial[i+1])
+        '''
+        #print(a_current) 
+        
+        print(f"a{itteration+1}:",a_current)
+        #print("=================")
+        if itteration > 0:
+            for e in e_stored:
+                U_partial_vec.append(U_partial(a_current,e))
+            #U_current = sum(U_partial_vec)
+            print("partial U:",U_partial_vec)
+            for i in range(itteration):
+                U_partial_np = np.array([])
+                #U_current_list = []
+                #U_current_list.append(U_current)
+                U_partial_np = np.append(U_partial_np,U_partial_vec[i])
+                print("U_partial_np:",U_partial_np)
+                #if itteration > 1:
+                    #U_current += U_partial_np[i]
+                    #print(f"{U_current} + {U_partial_np[i]} = {U_current+U_partial_np[i]}")
+                #else:
+                U_current += U_partial_np
+
+        print(f"{U_current}+{a_current} = {U_current+a_current}")
+        U_current += a_current
+        # U_current done
+        
+        # set up e_current and append temp_matrix
+        # uses def two_norm(U_current) just returns 2 norm of given vector
+        print(f"U{itteration+1}:",U_current)
+        two_norm_U = two_norm(U_current)
+        for i in range(len(U_current)):
+            e_current = np.append(e_current,U_current[i]/two_norm_U)
+        # e_current done
+
+        e_stored.append(e_current)
+        # temp_matrix done
+        # rows are e_current
+
+        # recursive for next iteration
+        print(f"e{itteration+1}:",e_current)
+        print(f"Q trasposed:",e_stored)
+        return Gram_Schmidt(A , itteration + 1, e_stored)
+
+def QR_multiply(a,e):
+    multiply = np.multiply(a,e)
+    summ = sum(multiply)
+    return summ
+
+def QR(A,Q,itteration = 0,R = np.array([])):
+    if itteration == 0:
+        R = np.zeros((len(A),len(A)))
+    if itteration == len(A):
+        return R
+    else:
+        for col in range(len(A)-itteration):
+            R[itteration][col+itteration] = QR_multiply(A[:,col+itteration],Q[:,itteration])
+        return QR(A,Q,itteration+1,R)
+    #print(R)
+
+
+matrix = np.array([[1,1,0],[1,0,1],[0,1,1]])
+Q = Gram_Schmidt(matrix)
+print("Q:\n",Q.round(3))
+
+R = QR(matrix,Q)
+print("R:\n",R.round(3))
+
+# check
+thing = np.matmul(Q,R)
+print("Q x R:\n",thing.round(2))
+                   
