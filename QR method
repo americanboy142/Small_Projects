@@ -131,20 +131,22 @@ def QR_multiply(a,e):
     return summ
 
 
-def QR(A,Q,itteration = 0,R = np.array([])):
+def QR(A,Q = [],itteration = 0,R = np.array([])):
     '''
     returns a zero matrix of size A
     on first itteration
+    solves for Q using gram_schmidt
     3/11/2023
     '''
     if itteration == 0:
+        Q = Gram_Schmidt(A)
         R = np.zeros((len(A),len(A)))
     '''
     stop condition
     3/11/2023
     '''
     if itteration == len(A):
-        return R
+        return (Q,R)
     else:
         '''
         sets the each item of R after r[ii] = to a[i]*e[j]
@@ -161,12 +163,11 @@ function calls, formating, and testing
 matrix = np.array([[1,1,0],[1,0,1],[0,1,1]])
 np_Q,np_R = np.linalg.qr(matrix)
 
-Q = Gram_Schmidt(matrix)
+Q,R = QR(matrix)
+
 print("My Q:\n",Q.round(3))
 print("Numpy Q:\n", np_Q.round(3))
 
-
-R = QR(matrix,Q)
 print("My R:\n",R.round(3))
 print("Numpy R:\n", np_R.round(3))
 
