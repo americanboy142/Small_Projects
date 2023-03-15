@@ -122,7 +122,153 @@ def findMedian(arr):
     arr.sort()
     print(arr[int(len(arr)/2)])
     
+def lonelyinteger(a):
+    # Write your code here
+    count=0
+    tested = []
+    while len(a) != 0:
+        test= a[0]
+        a.remove(test)
+        if test not in a and test not in tested:
+            print(test)
+        tested.append(test)
 
-print(int(25/2))
+def diagonalDifference(arr):
+    left_index = 0
+    right_index = len(arr)-1
+    left_sum = 0
+    right_sum = 0
+    for i in arr:
+        left_sum += i[left_index]
+        right_sum += i[right_index]
+        left_index += 1
+        right_index -= 1
+    print(abs(left_sum-right_sum))
+
+def countingSort(arr):
+    count = [0]*(max(arr)+1)
+    for i in arr:
+        count[i] += 1
+    print(count)
+    
+def flipMatrix(arr):
+    n = len(arr)
+    maxx = 0
+    Sum = 0
+
+    for row in len(range(n/2)):
+        for col in len(range(n/2)):
+            maxx = min(min(i) for i in arr)
+            maxx = max([arr[row][col],maxx])
+            maxx = max([arr[row][col*n-1],maxx])
+            maxx = max([arr[row*n-1][col],maxx])
+            maxx = max([arr[row*n-1][col*n-1],maxx])
+
+            Sum += maxx
+    return Sum
+
+def findZigZagSequence(a, n):
+    a.sort()
+    mid = int((n)/2)
+    a[mid-1], a[-1] = a[-1], a[mid-1]
+    st = mid
+    ed = n - 2
+    while(st <= ed):
+        a[st], a[ed] = a[ed], a[st]
+        st = st + 1
+        ed = ed - 1
+        
+    for i in range (n):
+        if i == n-1:
+            print(a[i])
+        else:
+            print(a[i], end = ' ')
+
+def next_move(posr, posc, board):
+    if board[posr][posc] == 'd':
+        print("CLEAN")
+    else:
+        dirt_col_check = False
+        dirt_row_check = False
+
+        if 'd' in board[posr]:
+            dirt_row = board[posr].index('d')
+            row_dist = dirt_row - posr
+            dirt_row_check = True
 
 
+        for i in range(len(board)):
+            if board[i][posc] == 'd':
+                dirt_col = i
+                col_dist = i - posc
+                dirt_col_check = True
+                break
+        
+        #print(dirt_col_check)
+        #print(dirt_row_check)
+
+        row_move = False
+        col_move = False
+
+        if dirt_row_check and dirt_col_check:
+            if abs(row_dist) < abs(col_dist):
+                row_move = True
+            else:
+                col_move = True
+        elif dirt_row == True and dirt_col != True:
+            col_move = True
+        elif dirt_row != True and dirt_col == True:
+            print("hi")
+            row_move = True
+        else:
+            print("RIGHT")
+
+
+        #print(row_move)
+        #print(col_dist)
+
+        if col_move:
+            if col_dist < 0:
+                print("UP")
+            else:
+                print("DOWN")
+
+        if row_move:
+            if row_dist < 0:
+                print("LEFT")
+            else:
+                print("RIGHT")
+
+#next_move(0,1,([['-','-','d'],['-','d','-'],['-','-','d']]))
+
+def findMedianSortedArrays(a,b):
+    mixed = sorted(a+b)
+
+    n = len(mixed)
+    middle = n//2
+
+    if n & 1:
+        print(mixed[middle])
+    else:
+        print((mixed[middle-1]+mixed[middle])/2)
+
+
+def isMatch(s, p):
+    def recur(i,j):
+        if i >= len(s) and j >= len(p):
+            return True
+        if j >= len(p):
+            return False
+        
+        match = i < len(s) and (s[i] == p[j] or p[j] == '.')
+
+        if j+1 < len(p) and p[j+1] == '*':
+            return recur(i,j+2) or (match and recur(i+1,j))
+    
+        if match:
+            return recur(i+1,j+1)
+        return False
+    return recur(0,0)
+
+thin = isMatch("aa","a*")
+print(thin)
