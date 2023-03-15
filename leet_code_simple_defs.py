@@ -270,5 +270,102 @@ def isMatch(s, p):
         return False
     return recur(0,0)
 
-thin = isMatch("aa","a*")
+def minDifference(nums):
+        n = len(nums)
+        if n > 4:
+            nums.sort()
+            min_diff = nums[-1]-nums[0]
+            if min_diff != 0:
+                for i in range(1,5):
+                    test = nums[-i] -nums[0]
+                    #print("yes")
+                    #print(f"{nums[-i]} - {nums[0]} =" ,test)
+                    #print(min_diff)
+                    if test < min_diff:
+                        #print("tested:" ,nums[-i])
+                        #print(f"{nums[-i]} - {nums[0]} =" ,test)
+                        min_diff = test
+                        #print(min_diff)
+                for i in range(4):
+                    test = nums[-1] - nums[i]
+                    #print("hi")
+                    #print(test)
+                    #print(f"{nums[-1]} - {nums[i]} =" ,test)
+                    if test < min_diff:
+                        min_diff = test
+                        #print("tested:" ,nums[i])
+                        #print(f"{nums[-1]} - {nums[i]} =" ,test)
+                        #print(min_diff)
+                
+                if nums[-3] - nums[1] < min_diff:
+                    min_diff = nums[-3] - nums[1]
+                    #print(f"{nums[-2]} - {nums[i]} =" ,min_diff)
+                if nums[-2] - nums[2] < min_diff:
+                    min_diff = nums[-2] - nums[2]
+                    #print(f"{nums[-2]} - {nums[2]} =" , min_diff)
+
+
+            return min_diff
+        return 0
+
+def intToRoman4(num):
+    s = ''
+    posible = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],
+                ['X',10],['IX',9],['V',5],['IV',4],['I',1]]
+    while num > 0:
+        for i in posible:
+            if num - i[1] >= 0:
+                s+=i[0]
+                num -= i[1]
+                break
+    return s
+
+def intToRoman3(num):
+    s = ''
+    posible = [['M',1000,100],['D',500,100],['C',100,10],['L',50,10],
+                ['X',10,1],['V',5,1],['I',1]]
+    
+    for i in posible:
+        if num == i[1]:
+            return i[0]
+
+    digets = []
+    base = 1
+    while num > 0:
+        digets.append(num%10*base)
+        num//=10
+        base *= 10
+    digets.reverse()
+    def reverse(num,posible,s):
+        close = -1
+        for i in range(len(posible)-1):
+            if num + posible[i][2] >= posible[i][1]:
+                close = posible[i][1]
+                break
+        
+        if close > 0:
+            dif = close - num
+            while dif > 0:
+                for i in posible:
+                    if dif - i[1] >= 0:
+                        s += i[0]
+                        dif -= i[1]
+                        num += i[1]
+                        break
+        return s,num
+    print(digets)
+    for num in digets:
+        while num > 0:
+            if num < 1000:
+                s,num = reverse(num,posible,s)
+            for i in posible:
+                if num - i[1] >= 0:
+                    s += i[0]
+                    num -= i[1]
+                    break
+    return s
+
+
+
+thin = intToRoman4(1994)
 print(thin)
